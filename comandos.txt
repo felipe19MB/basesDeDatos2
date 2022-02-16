@@ -1,0 +1,26 @@
+ creará un nuevo directorio con el nombre del fichero:
+tar xvf kafka_x.x.x.x.tgz
+
+Este directorio contiene todos los ejecutables shell que vamos a necesitar en Apache Kafka.
+cd kafka_x.x.x.x/bin
+
+ste fichero contiene las propiedades por defecto del servidor de Zookeeper, que ejecuta en el puerto 2181
+./zookeeper-server-start.sh ../config/zookeeper.properties
+
+Una vez que tenemos Zookeeper ejecutando, podemos arrancar un broker de Kafka en otra terminal indicándole su fichero de configuración por defecto.
+./kafka-server-start.sh ../config/server.properties
+
+Para poder publicar mensajes, vamos a crear un topic de prueba con nombre «testtopic» y configurarlo con dos particiones y un factor de replicación de 1. También, indicamos al script el host y el puerto donde se encuentra nuestro Zookeeper.
+./kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 2 --topic testtopic
+
+También podemos acceder a los detalles del topic con el siguiente comando:
+./kafka-topics.sh --list --zookeeper localhost:2181
+
+ este comando, le tendremos que indicar al menos un bootstrap server, un topic del que va a leer y el grupo de consumidores al que pertenece.
+/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic testtopic --group grupo1
+
+Para publicar mensajes en nuestro topic desde la consola, podemos usar el siguiente comando. Le tenemos que indicar la lista de brokers y el nombre del topic.
+./kafka-console-producer.sh --broker-list localhost:9092 --topic testtopic
+
+Para obtener los detalles de los consumidores y el offset de cada partición, accedemos con este comando:
+./kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group grupo1 --describe
